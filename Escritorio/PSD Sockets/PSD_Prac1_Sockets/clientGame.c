@@ -1,5 +1,61 @@
+/*
+Lenin Fabricio Benavides Quintana
+*/
+
+
 #include "clientGame.h"
 #include <sys/socket.h>
+
+
+
+// funciones necesarias para el envio y la recepcion de los mensajes
+
+
+void sendMessageToServer(char* msg,int socketfd ){
+
+	// primero se enviara la longitud del mensaje
+	int tamMsg = sizeof(msg);
+
+	
+	if(send(socketfd,&tamMsg,sizeof(int),0) < sizeof(int))
+		showError("ERROR while writing the size to the socket");
+
+		// ahora enviamos el el mensaje 
+	if(send(socketfd,msg,sizeof(msg),0) < 0)
+		showError("ERROR while writing the message to the socket");
+
+
+
+
+}
+
+void recvMessageToServer(char* msg,int sockefd){
+
+	// primero recibimos el tamaño del mensaje
+	int tamMsg ;
+	char *aux ;
+	int bytesRecibidos = 0 , totalBytesRecibidos = 0 ;
+
+
+	tamMsg = recv(socketfd,&tamMsg,sizeof(int),0);
+
+	// inicializamos la cadena para evitar fallos
+
+	memset(msg, 0, STRING_LENGTH);
+
+	/// recibimos el mensaje
+
+	while(totalBytesRecibidos < tamMsg){
+
+		bytesRecibidos = recv(socketfd,msg,STRING_LENGTH-1,0) ;
+
+		totalBytesRecibidos += bytesRecibidos ;
+
+
+	} 
+
+
+}
 
 unsigned int readMove (){
 
@@ -34,7 +90,7 @@ unsigned int readMove (){
 
 			// Entered move is not a number
 			if (!isValid){
-				printf ("Entered move is not correct. It must be a number between [0-%d]\n", BOARD_WIDTH-1);
+				printf ("Entered move is not correct. It must be a number between [0-%d]\n", BOARD_W@Benny250 IDTH-1);
 			}
 
 			// Entered move is a number...
@@ -71,32 +127,37 @@ recv
 close
 */
 
-// pimero vamos a parsear los argumentos recibidos 
+	// pimero vamos a parsear los argumentos recibidos 
 
-port = atoi(argv[2]);
-serverIP = argv[1];
+	port = atoi(argv[2]);
+	serverIP = argv[1];
 
-// inicializamos el socket 
-socketfd = socket(AF_INET,SOCK_STREAM,IPPROTO_TCP);
+	// inicializamos el socket 
+	socketfd = socket(AF_INET,SOCK_STREAM,IPPROTO_TCP);@Benny250 
 
-if(socketfd < 0)
-	showError("ERROR while creating the socket ");
+	if(socketfd < 0)
+		showError("ERROR while creating the socket ");
 
-//rellenar la estructura  de ceros 
-menset(&server_address,0,sizeof(server_address));
-// rellenamos la estrcutura con los valores necesarios 
-server_address.sin_family = AF_INET;
-server_address.sin_addr.s_addr = inet_addr(serverIP);
-server_address.sin_port = htons(port);
+	//rellenar la estructura  de ceros 
+	menset(&server_address,0,sizeof(server_address));
+	// rellenamos la estrcutura con los valores necesarios 
+	server_address.sin_family = AF_INET;
+	server_address.sin_addr.s_addr = inet_addr(serverIP);
+	server_address.sin_port = htons(port);
 
-// realizamos la conection con el servidor 
+	// realizamos la conection con el servidor 
 
-if (connect(fd,(struct sockaddr *)server_address,sizeof(server_address))<0)
-	showError("ERROR while establishing connection");
+	if (connect(fd,(struct sockaddr *)server_address,sizeof(server_address))<0)
+		showError("ERROR while establishing connection");
 
-/*
-Apartir de aqui se implementa el envio y la recepcion de mensajes
-*/
+	/*
+	Apartir de aqui se implementa el envio y la recepcion de mensajes
+	*/
+
+  
+
+
+
 
 
 }
